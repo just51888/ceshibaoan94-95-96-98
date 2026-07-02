@@ -8,7 +8,7 @@ from telegram import Update
 from telegram.ext import Application, CommandHandler, ContextTypes
 
 # ======================== 配置区 ========================
-TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
+TOKEN = "8221274039:AAG2WMUj9EqsGsX-KMIQAFaY2SR1ARtMUIc"  # 宝安机器人的 Token
 ADMIN_ID = 7140260550  # 统一管理员 ID
 
 name_map = {
@@ -24,7 +24,7 @@ name_map = {
     "jinyu": "金鱼",
 }
 
-WELCOME_TEXT = "欢迎！发送消息即可联系客服。"
+WELCOME_TEXT = "欢迎！"
 # =======================================================================
 
 DB_DIR = "/app/data"
@@ -100,20 +100,24 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     else:
         param = None
 
+    # 处理参数：记录并通知管理员，但不回复用户来源
     if param and param in name_map:
         source = name_map[param]
-        reply = f"欢迎！你来自：{source}"
         save_click(user_id, source)
         await context.bot.send_message(
             chat_id=ADMIN_ID,
             text=f"🔔 新用户来源：\n用户ID: {user_id}\n用户名: @{username}\n来源: {source}"
         )
     elif param:
-        reply = f"欢迎！你来自：{param}"
-    else:
-        reply = WELCOME_TEXT
+        save_click(user_id, param)
+        await context.bot.send_message(
+            chat_id=ADMIN_ID,
+            text=f"🔔 新用户来源：\n用户ID: {user_id}\n用户名: @{username}\n来源: {param}"
+        )
+    # 无参数时不做特殊处理
 
-    await update.message.reply_text(reply)
+    # 统一回复简短欢迎语（不暴露来源）
+    await update.message.reply_text(WELCOME_TEXT)
 
 
 async def getlink(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -123,7 +127,7 @@ async def getlink(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chinese = " ".join(context.args)
     encoded = urllib.parse.quote(chinese)
     link = f"https://t.me/{context.bot.username}?start={encoded}"
-    await update.message.reply_text(f"新链接（平台会显示中文）：\n{link}")
+    await update.message.reply_text(f"新链接：\n{link}")
 
 
 async def stats_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
