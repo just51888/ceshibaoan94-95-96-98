@@ -8,7 +8,7 @@ from telegram import Update
 from telegram.ext import Application, CommandHandler, ContextTypes
 
 # ======================== 配置区 ========================
-TOKEN = "TOKEN = "8662964414:AAH0mSZuEZ-_9V34wYjPi2wug4cpioypUrE""  # 光明机器人的 Token
+TOKEN = "8662964414:AAH0mSZuEZ-_9V34wYjPi2wug4cpioypUrE"  # 光明机器人的 Token
 ADMIN_ID = 7140260550  # 统一管理员 ID
 
 name_map = {
